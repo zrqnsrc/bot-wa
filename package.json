@@ -10,10 +10,9 @@
   "license": "ISC",
   "description": "WhatsApp Image-to-Sticker Bot",
   "dependencies": {
-    "@whiskeysockets/baileys": "^7.0.0-rc.9",
+    "@whiskeysockets/baileys": "^6.7.21",
     "node-webpmux": "^3.2.1",
     "pino": "^10.3.1",
-    "qrcode-terminal": "^0.12.0",
     "sharp": "^0.34.5"
   }
 }

@@ -2,18 +2,11 @@ const {
     default: makeWASocket,
     useMultiFileAuthState,
     DisconnectReason,
-    makeCacheableSignalKeyStore,
-    Browsers,
 } = require('@whiskeysockets/baileys');
 const pino = require('pino');
-const qrcode = require('qrcode-terminal');
 const { handleStickerCommand } = require('./stickerHandler');
 
 const logger = pino({ level: 'silent' });
-
-// Ganti dengan nomor WA kamu (dengan kode negara, tanpa + atau 0)
-// Contoh: 6281234567890
-const PHONE_NUMBER = '';
 
 let isReconnecting = false;
 
@@ -21,28 +14,13 @@ async function startBot() {
     const { state, saveCreds } = await useMultiFileAuthState('./auth_info');
 
     const sock = makeWASocket({
-        auth: {
-            creds: state.creds,
-            keys: makeCacheableSignalKeyStore(state.keys, logger),
-        },
+        auth: state,
+        printQRInTerminal: true,
         logger,
-        browser: Browsers.macOS('Chrome'),
+        browser: ['Bot-WA', 'Chrome', '4.0.0'],
         generateHighQualityLinkPreview: false,
         markOnlineOnConnect: false,
     });
-
-    // Pairing code (alternatif QR) — hanya jika belum terdaftar
-    if (PHONE_NUMBER && !sock.authState.creds.registered) {
-        setTimeout(async () => {
-            try {
-                const code = await sock.requestPairingCode(PHONE_NUMBER);
-                console.log(`\n🔑 Pairing Code: ${code}`);
-                console.log('Buka WhatsApp → Settings → Linked Devices → Link a Device → Link with phone number\n');
-            } catch (err) {
-                console.error('Gagal request pairing code:', err.message);
-            }
-        }, 3000);
-    }
 
     // Simpan credentials saat update
     sock.ev.on('creds.update', saveCreds);
@@ -51,11 +29,8 @@ async function startBot() {
     sock.ev.on('connection.update', (update) => {
         const { connection, lastDisconnect, qr } = update;
 
-        // Tampilkan QR code di terminal
         if (qr) {
-            console.log('\n📱 Scan QR Code berikut dengan WhatsApp:\n');
-            qrcode.generate(qr, { small: true });
-            console.log('\nBuka WhatsApp → Settings → Linked Devices → Link a Device\n');
+            console.log('\n📱 Scan QR Code di atas dengan WhatsApp!\n');
         }
 
         if (connection === 'close') {
