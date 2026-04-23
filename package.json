@@ -1,0 +1,18 @@
+{
+  "name": "bot-wa",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "WhatsApp Image-to-Sticker Bot",
+  "dependencies": {
+    "@whiskeysockets/baileys": "^7.0.0-rc.9",
+    "node-webpmux": "^3.2.1",
+    "pino": "^10.3.1",
+    "sharp": "^0.34.5"
+  }
+}
