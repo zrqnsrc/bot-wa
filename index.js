@@ -5,9 +5,12 @@ const {
     makeCacheableSignalKeyStore,
 } = require('@whiskeysockets/baileys');
 const pino = require('pino');
+const qrcode = require('qrcode-terminal');
 const { handleStickerCommand } = require('./stickerHandler');
 
 const logger = pino({ level: 'silent' });
+
+let isReconnecting = false;
 
 async function startBot() {
     const { state, saveCreds } = await useMultiFileAuthState('./auth_info');
@@ -17,7 +20,6 @@ async function startBot() {
             creds: state.creds,
             keys: makeCacheableSignalKeyStore(state.keys, logger),
         },
-        printQRInTerminal: true,
         logger,
         browser: ['Bot-WA', 'Chrome', '1.0.0'],
         generateHighQualityLinkPreview: false,
@@ -31,8 +33,12 @@ async function startBot() {
     sock.ev.on('connection.update', (update) => {
         const { connection, lastDisconnect, qr } = update;
 
+        // Tampilkan QR code di terminal secara manual
         if (qr) {
-            console.log('\n📱 Scan QR Code di atas dengan WhatsApp kamu!\n');
+            console.clear();
+            console.log('\n📱 Scan QR Code berikut dengan WhatsApp:\n');
+            qrcode.generate(qr, { small: true });
+            console.log('\nBuka WhatsApp → Settings → Linked Devices → Link a Device\n');
         }
 
         if (connection === 'close') {
@@ -45,12 +51,17 @@ async function startBot() {
                 shouldReconnect ? 'Reconnecting...' : 'Logged out, silakan hapus folder auth_info dan scan ulang.'
             );
 
-            if (shouldReconnect) {
-                startBot();
+            if (shouldReconnect && !isReconnecting) {
+                isReconnecting = true;
+                setTimeout(() => {
+                    isReconnecting = false;
+                    startBot();
+                }, 3000);
             }
         }
 
         if (connection === 'open') {
+            isReconnecting = false;
             console.log('✅ Bot berhasil terhubung ke WhatsApp!');
         }
     });
