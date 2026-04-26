@@ -36,7 +36,7 @@ function convertVideoToWebp(videoBuffer) {
     ffmpeg(inputPath)
       .addOutputOptions([
         '-vcodec', 'libwebp',
-        '-vf', 'scale=512:512:force_original_aspect_ratio=decrease,fps=15,pad=512:512:(ow-iw)/2:(oh-ih)/2:color=#00000000',
+        '-vf', "scale='if(gt(iw,ih),512,-2)':'if(gt(iw,ih),-2,512)',fps=15",
         '-loop', '0',
         '-ss', '00:00:00',
         '-t', String(MAX_VIDEO_DURATION),
