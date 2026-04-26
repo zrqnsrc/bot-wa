@@ -2,8 +2,10 @@ const {
     default: makeWASocket,
     useMultiFileAuthState,
     DisconnectReason,
+    fetchLatestBaileysVersion,
 } = require('@whiskeysockets/baileys');
 const pino = require('pino');
+const qrcode = require('qrcode-terminal');
 const { handleStickerCommand } = require('./stickerHandler');
 
 const logger = pino({ level: 'silent' });
@@ -13,11 +15,22 @@ let isReconnecting = false;
 async function startBot() {
     const { state, saveCreds } = await useMultiFileAuthState('./auth_info');
 
+    // Fetch versi WhatsApp Web terbaru agar tidak ditolak server
+    let version;
+    try {
+        const { version: fetchedVersion } = await fetchLatestBaileysVersion();
+        version = fetchedVersion;
+        console.log(`📌 Menggunakan WA Web versi: ${version.join('.')}`);
+    } catch (err) {
+        version = [2, 3000, 1037641644];
+        console.log(`📌 Gagal fetch versi, menggunakan fallback: ${version.join('.')}`);
+    }
+
     const sock = makeWASocket({
         auth: state,
-        printQRInTerminal: true,
+        version,
         logger,
-        browser: ['Bot-WA', 'Chrome', '4.0.0'],
+        browser: ['Chrome', 'Windows', '110.0.5481.177'],
         generateHighQualityLinkPreview: false,
         markOnlineOnConnect: false,
     });
@@ -29,8 +42,11 @@ async function startBot() {
     sock.ev.on('connection.update', (update) => {
         const { connection, lastDisconnect, qr } = update;
 
+        // Render QR code secara manual
         if (qr) {
-            console.log('\n📱 Scan QR Code di atas dengan WhatsApp!\n');
+            console.log('\n📱 Scan QR Code berikut dengan WhatsApp:\n');
+            qrcode.generate(qr, { small: true });
+            console.log('\nBuka WhatsApp → Settings → Linked Devices → Link a Device\n');
         }
 
         if (connection === 'close') {
