@@ -3,7 +3,7 @@ const sharp = require('sharp');
 const { addExifToWebp } = require('./utils/exif');
 
 const PACK_NAME = 'de • 909';
-const AUTHOR = 'de • 909';
+const AUTHOR = '';
 const COMMAND = '.s';
 const ERROR_MSG = 'Kirim/reply gambar dengan caption .s';
 
