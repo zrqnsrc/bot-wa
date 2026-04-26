@@ -36,14 +36,16 @@ function convertVideoToWebp(videoBuffer) {
     ffmpeg(inputPath)
       .addOutputOptions([
         '-vcodec', 'libwebp',
-        '-vf', 'scale=512:512:force_original_aspect_ratio=increase,crop=512:512,fps=15',
+        '-vf', 'scale=512:512:force_original_aspect_ratio=increase,crop=512:512,fps=10',
         '-loop', '0',
         '-ss', '00:00:00',
         '-t', String(MAX_VIDEO_DURATION),
         '-preset', 'default',
-        '-an',            // tanpa audio
+        '-an',
         '-vsync', '0',
-        '-quality', '50',
+        '-quality', '35',
+        '-compression_level', '6',
+        '-fs', '900K',
       ])
       .toFormat('webp')
       .on('end', () => {
@@ -130,7 +132,7 @@ async function handleStickerCommand(sock, msg) {
           fit: 'contain',
           background: { r: 0, g: 0, b: 0, alpha: 0 },
         })
-        .webp({ quality: 80 })
+        .webp({ quality: 60 })
         .toBuffer();
 
       stickerBuffer = await addExifToWebp(webpBuffer, PACK_NAME, AUTHOR);
