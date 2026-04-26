@@ -11,6 +11,7 @@
   "description": "WhatsApp Image-to-Sticker Bot",
   "dependencies": {
     "@whiskeysockets/baileys": "^6.7.21",
+    "fluent-ffmpeg": "^2.1.3",
     "node-webpmux": "^3.2.1",
     "pino": "^10.3.1",
     "qrcode-terminal": "^0.12.0",
