@@ -7,6 +7,7 @@ const {
 const pino = require('pino');
 const qrcode = require('qrcode-terminal');
 const { handleStickerCommand } = require('./stickerHandler');
+const { handleAiCommand } = require('./aiHandler');
 
 const logger = pino({ level: 'silent' });
 
@@ -83,6 +84,7 @@ async function startBot() {
 
             try {
                 await handleStickerCommand(sock, msg);
+                await handleAiCommand(sock, msg);
             } catch (err) {
                 console.error('Error handling message:', err);
             }
