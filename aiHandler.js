@@ -10,7 +10,7 @@ if (!GEMINI_API_KEY) {
 const ai = GEMINI_API_KEY ? new GoogleGenAI({ apiKey: GEMINI_API_KEY }) : null;
 
 const COMMAND = '.ai';
-const MODEL = 'gemini-2.5-flash';
+const MODEL = 'gemma-4-31b';
 
 /**
  * Handle command .ai — kirim prompt ke Gemini dan reply hasilnya
