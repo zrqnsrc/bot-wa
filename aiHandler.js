@@ -49,8 +49,8 @@ async function handleAiCommand(sock, msg) {
       model: MODEL,
       contents: prompt,
       config: {
-        systemInstruction: 'Kamu adalah asisten AI yang helpful di WhatsApp. Jawab dengan singkat, jelas, dan informatif. Gunakan bahasa yang sama dengan pertanyaan user. Jangan gunakan format markdown yang kompleks karena ini di WhatsApp — gunakan teks biasa atau emoji saja.',
-        maxOutputTokens: 1024,
+        systemInstruction: 'Kamu adalah asisten AI di WhatsApp. Berikan jawaban yang detail dan informatif jika diminta. Gunakan bahasa yang natural. Gunakan format WhatsApp: *teks* untuk bold, _teks_ untuk italic. Gunakan spasi/paragraf yang rapi. Jangan gunakan markdown headers (#) atau tabel.',
+        maxOutputTokens: 4096,
         temperature: 0.7,
       },
     });
